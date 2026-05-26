@@ -1,0 +1,13 @@
+node_modules
+.next
+.git
+*.md
+node/
+android/
+temp/
+logs/
+start-skyscan.ps1
+start-skyscan.vbs
+stop-skyscan.ps1
+skyscan-tunnel.json
+config.yml

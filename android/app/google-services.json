@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "960017139669",
+    "project_id": "studio-8069764533-ee28b",
+    "storage_bucket": "studio-8069764533-ee28b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:960017139669:android:1abc3ac095803baa451f5c",
+        "android_client_info": {
+          "package_name": "com.umbrellacorp.skyscan"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC80zoan1S0UTzo10dYcqQVmQv368FAmUo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

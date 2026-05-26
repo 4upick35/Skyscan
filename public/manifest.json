@@ -1,0 +1,22 @@
+{
+  "name": "SkyScan | Umbrella Corp.",
+  "short_name": "SkyScan",
+  "description": "Интегрированный терминал погодной защиты от Umbrella Corp.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}

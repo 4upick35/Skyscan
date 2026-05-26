@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Umbrella Clock Widget Transparent</title>
+    <style>
+        /* Подключаем шрифты */
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap');
+
+        :root {
+            --clock-size: 600px; /* Размер виджета */
+            --u-green: #4efd54;
+            --u-red: #ff0505;
+            /* Свечение стрелок */
+            --green-glow: drop-shadow(0 0 8px rgba(78, 253, 84, 0.7));
+            --red-glow: drop-shadow(0 0 6px rgba(255, 5, 5, 0.6));
+        }
+
+        /* Убираем фон у body и html, чтобы не было "квадрата" */
+        html, body {
+            background: transparent; /* Сделает фон прозрачным */
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Контейнер часов */
+        .clock-base {
+            position: relative;
+            width: var(--clock-size);
+            height: var(--clock-size);
+            background-image: url('face.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            /* Убрал внешнюю тень, которая могла создавать "границы" */
+        }
+
+        /* Общий стиль для всех стрелок */
+        .hand {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            pointer-events: none;
+            will-change: transform;
+        }
+
+        /* Свечение для зеленых стрелок */
+        #h-hand, #m-hand { filter: var(--green-glow); }
+
+        /* Свечение для секундной стрелки (красное) */
+        #s-hand { filter: var(--red-glow); }
+
+        /* ЦИФРОВЫЕ ЧАСЫ (Пиксельные, подняты высоко) */
+        .digital-clock {
+            position: absolute;
+            bottom: 28%;
+            width: 100%;
+            text-align: center;
+            font-family: 'VT323', monospace; 
+            font-size: calc(var(--clock-size) * 0.11);
+            color: var(--u-green);
+            letter-spacing: 2px;
+            text-shadow: 0 0 15px rgba(78, 253, 84, 0.9);
+            z-index: 5;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="clock-base">
+        <!-- Цифровое табло -->
+        <div id="digital-time" class="digital-clock">00:00:00</div>
+        
+        <!-- Слои стрелок -->
+        <div id="h-hand" class="hand" style="background-image: url('hour.png'); z-index: 10;"></div>
+        <div id="m-hand" class="hand" style="background-image: url('minute.png'); z-index: 11;"></div>
+        <div id="s-hand" class="hand" style="background-image: url('second.png'); z-index: 12;"></div>
+    </div>
+
+<script>
+    const hHand = document.getElementById('h-hand');
+    const mHand = document.getElementById('m-hand');
+    const sHand = document.getElementById('s-hand');
+    const digital = document.getElementById('digital-time');
+
+    function update() {
+        const now = new Date();
+        const ms = now.getMilliseconds();
+        const s = now.getSeconds();
+        const m = now.getMinutes();
+        const h = now.getHours();
+
+        // Плавный ход 60 кадров в секунду
+        const sDeg = (s * 6) + (ms * 0.006);
+        const mDeg = (m * 6) + (s * 0.1);
+        const hDeg = ((h % 12) * 30) + (m * 0.5);
+
+        sHand.style.transform = `rotate(${sDeg}deg)`;
+        mHand.style.transform = `rotate(${mDeg}deg)`;
+        hHand.style.transform = `rotate(${hDeg}deg)`;
+
+        const displayTime = 
+            (h < 10 ? '0' + h : h) + ':' + 
+            (m < 10 ? '0' + m : m) + ':' + 
+            (s < 10 ? '0' + s : s);
+        
+        if (digital.innerText !== displayTime) {
+            digital.innerText = displayTime;
+        }
+
+        requestAnimationFrame(update);
+    }
+
+    requestAnimationFrame(update);
+</script>
+
+</body>
+</html>

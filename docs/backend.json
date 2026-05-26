@@ -1,0 +1,165 @@
+{
+  "entities": {
+    "UserProfile": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "UserProfile",
+      "type": "object",
+      "description": "Represents a user's profile, storing personalized settings and preferences for the SkyScan application. This entity integrates with an external authentication system, so no sensitive authentication data is stored here.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the UserProfile entity. This typically corresponds to the user ID from an external authentication system."
+        },
+        "preferredUnits": {
+          "type": "string",
+          "description": "The user's preferred unit system for displaying weather data (e.g., 'metric', 'imperial')."
+        },
+        "notificationsEnabled": {
+          "type": "boolean",
+          "description": "Indicates whether the user has enabled weather notifications."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the user profile was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the user profile was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "preferredUnits",
+        "notificationsEnabled",
+        "createdAt"
+      ]
+    },
+    "Location": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Location",
+      "type": "object",
+      "description": "Stores details about a specific geographical location that users can search for, view weather information, or save.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Location entity."
+        },
+        "cityName": {
+          "type": "string",
+          "description": "The name of the city or primary administrative division."
+        },
+        "countryCode": {
+          "type": "string",
+          "description": "The ISO 3166-1 alpha-2 country code for the location (e.g., 'US', 'GB')."
+        },
+        "latitude": {
+          "type": "number",
+          "description": "The geographical latitude of the location."
+        },
+        "longitude": {
+          "type": "number",
+          "description": "The geographical longitude of the location."
+        },
+        "zipCode": {
+          "type": "string",
+          "description": "Optional ZIP or postal code for the location."
+        },
+        "displayName": {
+          "type": "string",
+          "description": "A human-readable string representing the location, suitable for display (e.g., 'New York City, US')."
+        }
+      },
+      "required": [
+        "id",
+        "cityName",
+        "countryCode",
+        "latitude",
+        "longitude",
+        "displayName"
+      ]
+    },
+    "UserLocation": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "UserLocation",
+      "type": "object",
+      "description": "Represents a link between a UserProfile and a Location, indicating a saved or frequently accessed location by a specific user.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the UserLocation entity (the join record)."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to the UserProfile entity. (Relationship: UserProfile 1:N UserLocation)"
+        },
+        "locationId": {
+          "type": "string",
+          "description": "Reference to the Location entity. (Relationship: Location 1:N UserLocation)"
+        },
+        "isPrimary": {
+          "type": "boolean",
+          "description": "Indicates if this is the user's primary or default location."
+        },
+        "order": {
+          "type": "number",
+          "description": "An optional numerical value to specify the display order of this location in a user's saved list."
+        },
+        "addedAt": {
+          "type": "string",
+          "description": "Timestamp when this location was added to the user's saved list.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "locationId",
+        "isPrimary",
+        "addedAt"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "UserProfile",
+          "schema": {
+            "$ref": "#/backend/entities/UserProfile"
+          },
+          "description": "Stores individual user settings and preferences, such as preferred units and notification settings. The document ID (`userId`) must match the authenticated user's UID (`request.auth.uid`). Access is restricted to the owning user. No denormalized authorization fields are needed as ownership is implicit in the path."
+        }
+      },
+      {
+        "path": "/locations/{locationId}",
+        "definition": {
+          "entityName": "Location",
+          "schema": {
+            "$ref": "#/backend/entities/Location"
+          },
+          "description": "Contains details for all searchable geographical locations. This collection is intended for public read access by all users. Write access would typically be restricted to administrators or automated backend processes to populate and maintain the list of available locations."
+        }
+      },
+      {
+        "path": "/users/{userId}/savedLocations/{userLocationId}",
+        "definition": {
+          "entityName": "UserLocation",
+          "schema": {
+            "$ref": "#/backend/entities/UserLocation"
+          },
+          "description": "Represents a specific geographical location saved by a user. This collection is nested under a user's profile to enforce ownership. Each document includes the `userId` field, which is denormalized to explicitly match the `userId` in the path, ensuring Authorization Independence for read and write operations. This allows users to manage their own saved locations without relying on parent document lookups in security rules."
+        }
+      }
+    ],
+    "reasoning": "The Firestore data structure for SkyScan is designed to be secure, scalable, and debuggable, strictly adhering to the core design principles. The primary goal is Authorization Independence, ensuring that security rules are simple and efficient without relying on expensive and complex `get()` calls.\n\n**Authorization Independence:**\n1.  **UserProfile:** User profiles are stored in `/users/{userId}`. The `userId` in the path directly corresponds to `request.auth.uid`, making authorization for `UserProfile` documents inherently independent. A user can only access their own profile (i.e., `request.auth.uid == userId`), eliminating the need for `get()` calls within rules.\n2.  **UserLocation:** Saved locations for a user are stored in a subcollection, `/users/{userId}/savedLocations/{userLocationId}`. The `UserLocation` entity itself includes a `userId` field. This denormalization ensures that the `userId` in the path matches the `userId` field within the document and `request.auth.uid`. This allows security rules to evaluate ownership solely based on the path parameter and the document's own data, `request.auth.uid == userId`, without needing to fetch the parent `UserProfile` document. This enables atomic write operations for `UserLocation` and robust security.\n\n**QAPs (Rules are not Filters):**\n1.  **Global Locations (`/locations`):** This collection is designed for public read access. Users can `list` all available `Location` documents without any filtering in the rules. The intent is for this data to be broadly accessible for searching and display.\n2.  **User Profiles (`/users/{userId}`):** Access is restricted to the owner. While `list` on the root `/users` collection is generally discouraged and disallowed for non-admin users, individual users can `get` their own profile directly by ID (`/users/request.auth.uid`).\n3.  **User's Saved Locations (`/users/{userId}/savedLocations`):** By nesting `UserLocation` documents under `/users/{userId}`, a user can securely `list` their own saved locations (`/users/request.auth.uid/savedLocations`). The security rule `allow list: if request.auth.uid == userId;` ensures that only the authenticated user can retrieve their own list, effectively making the path itself the filter, thus supporting QAPs. The denormalized `userId` within each `UserLocation` document further solidifies this for direct document access (read/write).\n\n**Backend Deployment Context:**\nThe user's note regarding `fetch('/api/advice')` changing to a concrete URL implies that the 'Personalized Weather Insights' feature will likely be implemented using Firebase Cloud Functions, serving as an API backend. These functions would expose HTTP endpoints (e.g., `https://<region>-<project-id>.cloudfunctions.net/advice`) that the frontend application would call. This design keeps the compute logic separate from Firestore, leveraging Cloud Functions for AI integration and external weather data fetching, and maintaining Firestore as a pure data store for profiles and saved locations."
+  }
+}

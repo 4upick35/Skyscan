@@ -1,0 +1,40 @@
+{
+  "placeholderImages": [
+    {
+      "id": "weather-sunny",
+      "description": "Чистое голубое небо с ярким солнцем",
+      "imageUrl": "https://images.unsplash.com/photo-1513002749550-c59d786b8e6c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjbGVhciUyMHNreXxlbnwwfHx8fDE3NzE1NDA0MDJ8MA&ixlib=rb-4.1.0&q=80&w=1920",
+      "imageHint": "clear sky"
+    },
+    {
+      "id": "weather-cloudy",
+      "description": "Драматичные кучевые облака на небе",
+      "imageUrl": "https://images.unsplash.com/photo-1534088568595-a066f410bcda?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjbG91ZHklMjBza3l8ZW58MHx8fHwxNzcxNTQwNDAyfDA&ixlib=rb-4.1.0&q=80&w=1920",
+      "imageHint": "cloudy sky"
+    },
+    {
+      "id": "weather-rain",
+      "description": "Тяжелое серое дождливое небо",
+      "imageUrl": "https://images.unsplash.com/photo-1534274988757-a28bf1f539cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxyYWlueSUyMHNreXxlbnwwfHx8fDE3NzE1NDA0MDJ8MA&ixlib=rb-4.1.0&q=80&w=1920",
+      "imageHint": "rainy sky"
+    },
+    {
+      "id": "weather-snow",
+      "description": "Белое заснеженное небо во время снегопада",
+      "imageUrl": "https://images.unsplash.com/photo-1418985991508-e47386d96a71?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxzbm93eSUyMHNreXxlbnwwfHx8fDE3NzE1NDA0MDJ8MA&ixlib=rb-4.1.0&q=80&w=1920",
+      "imageHint": "snowy sky"
+    },
+    {
+      "id": "weather-storm",
+      "description": "Грозовые тучи и темное небо",
+      "imageUrl": "https://images.unsplash.com/photo-1511289081-d06eda4c754e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHx0aHVuZGVyc3Rvcm0lMjBza3l8ZW58MHx8fHwxNzcxNTQwNDAyfDA&ixlib=rb-4.1.0&q=80&w=1920",
+      "imageHint": "stormy sky"
+    },
+    {
+      "id": "weather-fog",
+      "description": "Густой белый туман, скрывающий горизонт",
+      "imageUrl": "https://images.unsplash.com/photo-1485236715568-ddc5ee6ca227?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxmZ2dneSUyMHNreXxlbnwwfHx8fDE3NzE1NDA0MDJ8MA&ixlib=rb-4.1.0&q=80&w=1920",
+      "imageHint": "foggy sky"
+    }
+  ]
+}

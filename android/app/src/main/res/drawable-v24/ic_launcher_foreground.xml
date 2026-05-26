@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportHeight="100"
+    android:viewportWidth="100">
+    <group android:translateX="0" android:translateY="0">
+        <!-- Классический восьмиугольник Umbrella (Черно-зеленый) -->
+        <!-- Верхний - Зеленый -->
+        <path
+            android:fillColor="#32FF15"
+            android:pathData="M 50,50 L 35,10 L 65,10 Z" />
+        <!-- Верхний правый - Черный -->
+        <path
+            android:fillColor="#000000"
+            android:pathData="M 50,50 L 65,10 L 90,35 Z" />
+        <!-- Правый - Зеленый -->
+        <path
+            android:fillColor="#32FF15"
+            android:pathData="M 50,50 L 90,35 L 90,65 Z" />
+        <!-- Нижний правый - Черный -->
+        <path
+            android:fillColor="#000000"
+            android:pathData="M 50,50 L 90,65 L 65,90 Z" />
+        <!-- Нижний - Зеленый -->
+        <path
+            android:fillColor="#32FF15"
+            android:pathData="M 50,50 L 65,90 L 35,90 Z" />
+        <!-- Нижний левый - Черный -->
+        <path
+            android:fillColor="#000000"
+            android:pathData="M 50,50 L 35,90 L 10,65 Z" />
+        <!-- Левый - Зеленый -->
+        <path
+            android:fillColor="#32FF15"
+            android:pathData="M 50,50 L 10,65 L 10,35 Z" />
+        <!-- Верхний левый - Черный -->
+        <path
+            android:fillColor="#000000"
+            android:pathData="M 50,50 L 10,35 L 35,10 Z" />
+    </group>
+</vector>

@@ -1,0 +1,22 @@
+services:
+  skyscan:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: skyscan
+    restart: unless-stopped
+    ports:
+      - "9002:9002"
+    environment:
+      - NODE_ENV=production
+      - PORT=9002
+      - HOSTNAME=0.0.0.0
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GOOGLE_GENAI_API_KEY=${GOOGLE_GENAI_API_KEY}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
+    networks:
+      - windsurf-project_default
+
+networks:
+  windsurf-project_default:
+    external: true

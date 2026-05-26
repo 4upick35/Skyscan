@@ -1,0 +1,73 @@
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * CORE PHILOSOPHY:
+     * This ruleset enforces a strict user-ownership model for personalized data while allowing 
+     * public access to shared geographical information. Authorization is primarily driven by 
+     * the user's authenticated UID and its correspondence to document paths.
+     *
+     * DATA STRUCTURE:
+     * - /users/{userId}: Private user profiles and settings.
+     * - /locations/{locationId}: A public, read-only directory of geographical locations.
+     * - /users/{userId}/savedLocations/{userLocationId}: Private subcollections for individual user's saved places.
+     * - /users/{userId}/messages/{messageId}: Private subcollections for chat messages with the Oracle.
+     */
+
+    // --- Global Helper Functions ---
+
+    /** @description Checks if the request is from an authenticated user. */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /** @description Checks if the authenticated user matches the provided userId. */
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    /** @description Checks if the user is the owner and the document already exists. */
+    function isExistingOwner(userId) {
+      return isOwner(userId) && resource != null;
+    }
+
+    // --- Collection Rules ---
+
+    /**
+     * @description Rules for individual user profiles. Users can only manage their own data.
+     */
+    match /users/{userId} {
+      allow get, list: if isOwner(userId);
+      allow create: if isOwner(userId) && request.resource.data.id == userId;
+      allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id;
+      allow delete: if isExistingOwner(userId);
+
+      /**
+       * @description Rules for a user's saved locations.
+       */
+      match /savedLocations/{userLocationId} {
+        allow get, list: if isOwner(userId);
+        allow create: if isOwner(userId) && request.resource.data.userId == userId;
+        allow update: if isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
+        allow delete: if isExistingOwner(userId);
+      }
+
+      /**
+       * @description Rules for user's chat messages with Oracle.
+       */
+      match /messages/{messageId} {
+        allow get, list, create, delete: if isOwner(userId);
+      }
+    }
+
+    /**
+     * @description Rules for the global geographical location database.
+     */
+    match /locations/{locationId} {
+      allow get, list: if true;
+      allow create, update, delete: if false; 
+    }
+  }
+}

@@ -1,0 +1,12 @@
+tunnel: aff73378-c60b-4e6c-bb70-467da8dbcad8
+credentials-file: C:\Users\4upic\CascadeProjects\weather\skyscan-tunnel.json
+
+ingress:
+  - hostname: wth.behmatata.xyz
+    service: http://localhost:9002
+  - hostname: nc.behmatata.xyz
+    service: http://localhost:8086
+    originRequest:
+      disableChunkedEncoding: true
+      httpHostHeader: nc.behmatata.xyz
+  - service: http_status:404

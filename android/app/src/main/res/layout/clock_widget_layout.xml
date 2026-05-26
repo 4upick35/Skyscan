@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent">
+
+    <AnalogClock
+        android:id="@+id/analog_clock"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:dial="@drawable/clock_face"
+        android:hand_hour="@drawable/clock_hour"
+        android:hand_minute="@drawable/clock_minute"
+        android:hand_second="@drawable/clock_second" />
+
+    <TextClock
+        android:id="@+id/widget_digital_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="95dp"
+        android:format12Hour="HH:mm:ss"
+        android:format24Hour="HH:mm:ss"
+        android:fontFamily="monospace"
+        android:textColor="#4efd54"
+        android:textSize="18sp"
+        android:letterSpacing="0.12"
+        android:shadowColor="#804efd54"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="4" />
+
+</FrameLayout>
