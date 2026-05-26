@@ -4,30 +4,46 @@
     android:layout_height="match_parent"
     android:background="@android:color/transparent">
 
+    <ImageView
+        android:id="@+id/widget_clock_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitCenter"
+        android:contentDescription="@string/clock_widget_desc" />
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="85dp"
+        android:background="#BB0a0a0a"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="5dp">
+
+        <TextClock
+            android:id="@+id/widget_digital_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:format12Hour="HH:mm:ss"
+            android:format24Hour="HH:mm:ss"
+            android:fontFamily="@font/press_start_2p"
+            android:textColor="#4efd54"
+            android:textSize="17sp"
+            android:letterSpacing="0.06"
+            android:shadowColor="#804efd54"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="5" />
+
+    </FrameLayout>
+
     <AnalogClock
         android:id="@+id/analog_clock"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:dial="@drawable/clock_face"
+        android:dial="@drawable/widget_transparent_dial"
         android:hand_hour="@drawable/clock_hour"
         android:hand_minute="@drawable/clock_minute"
         android:hand_second="@drawable/clock_second" />
-
-    <TextClock
-        android:id="@+id/widget_digital_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginBottom="95dp"
-        android:format12Hour="HH:mm:ss"
-        android:format24Hour="HH:mm:ss"
-        android:fontFamily="monospace"
-        android:textColor="#4efd54"
-        android:textSize="18sp"
-        android:letterSpacing="0.12"
-        android:shadowColor="#804efd54"
-        android:shadowDx="0"
-        android:shadowDy="0"
-        android:shadowRadius="4" />
 
 </FrameLayout>
