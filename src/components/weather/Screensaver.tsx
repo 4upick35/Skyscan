@@ -59,7 +59,7 @@ export default function Screensaver({ weather, advice, onClose }: ScreensaverPro
   return (
     <div 
       className="fixed inset-0 z-[200] bg-black flex flex-col items-center justify-center cursor-none select-none p-4 md:p-8 overflow-hidden"
-      onClick={onClose}
+      onClick={(e) => { e.stopPropagation(); onClose(); }}
     >
       <div 
         className={cn(

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import WeatherBackground from "@/components/weather/WeatherBackground";
 import SearchBox from "@/components/weather/SearchBox";
 import WeatherDashboard from "@/components/weather/WeatherDashboard";
@@ -83,6 +83,8 @@ export default function SkyScanPage() {
   const [showMainPassDialog, setShowMainPassDialog] = useState(false);
   const [mainPassInput, setMainPassInput] = useState("");
   const [criticalError, setCriticalError] = useState(false);
+  const [mainPassError, setMainPassError] = useState(false);
+  const screensaverCooldownRef = useRef(0);
 
   const { auth, user, isUserLoading } = useFirebase();
   const { toast } = useToast();
@@ -262,10 +264,13 @@ export default function SkyScanPage() {
       setIsMainAuthorized(true);
       localStorage.setItem(UMBRELLA_AUTH_KEY, "true");
       setShowMainPassDialog(false);
+      setMainPassError(false);
       saveAiConfig({ ...aiConfig, provider: 'main_umbrella' });
     } else {
       if (audioEnabled && audioEngine) audioEngine.playError();
+      setMainPassError(true);
       setMainPassInput("");
+      setTimeout(() => setMainPassError(false), 2000);
     }
     setMainPassInput("");
   };
@@ -280,9 +285,13 @@ export default function SkyScanPage() {
 
   const handleScreensaverOpen = () => setIsScreensaverActive(true);
 
-  const handleScreenTap = () => {
+  const handleScreenTap = (e: React.MouseEvent) => {
+    const target = e.target as HTMLElement;
+    if (target.closest('button, input, a, [role="dialog"], [role="menuitem"], [data-radix-collection-item], [data-radix-menu-trigger]')) {
+      return;
+    }
     const now = Date.now();
-    if (now - lastTap < 300) {
+    if (now - lastTap < 300 && now - screensaverCooldownRef.current > 1000) {
       handleScreensaverOpen();
     }
     setLastTap(now);
@@ -306,7 +315,7 @@ export default function SkyScanPage() {
       <WeatherBackground condition={weather?.condition} windSpeed={weather?.windSpeed || 0} />
 
       {isScreensaverActive && weather && (
-        <Screensaver weather={weather} advice={currentAdvice} onClose={() => setIsScreensaverActive(false)} />
+        <Screensaver weather={weather} advice={currentAdvice} onClose={() => { screensaverCooldownRef.current = Date.now(); setIsScreensaverActive(false); }} />
       )}
 
       <div className={cn(
@@ -364,7 +373,6 @@ export default function SkyScanPage() {
                     </DialogTrigger>
                     <DialogContent className="bg-[#030303] border-primary/20 max-w-md">
                       <DialogHeader><DialogTitle className="text-primary uppercase tracking-widest">{t('app.history')}</DialogTitle></DialogHeader>
-                      <WeatherHistoryDrawer />
                     </DialogContent>
                   </Dialog>
                   <DropdownMenu>
@@ -399,7 +407,7 @@ export default function SkyScanPage() {
                   <DialogTitle className="text-primary uppercase tracking-widest text-center">{t('app.main_intellect')}</DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleMainPassSubmit} className="space-y-4">
-                  <Input type="password" className="bg-black text-primary font-code text-center tracking-[0.5em] h-12 border-primary/50" value={mainPassInput} onChange={(e) => setMainPassInput(e.target.value)} placeholder="••••••••••" />
+                  <Input type="password" className={cn("bg-black text-primary font-code text-center tracking-[0.5em] h-12 border-primary/50", mainPassError && "animate-shake border-destructive")} value={mainPassInput} onChange={(e) => setMainPassInput(e.target.value)} placeholder="••••••••••" />
                   <Button type="submit" className="w-full bg-primary text-black hover:bg-primary/80 h-12 font-bold">
                     <Unlock className="h-4 w-4 mr-2" /> {t('app.authorize')}
                   </Button>
@@ -409,6 +417,13 @@ export default function SkyScanPage() {
           )}
         </div>
       </div>
+
+      {weather && (
+        <>
+          <WeatherHistoryDrawer lat={weather.lat} lon={weather.lon} location={weather.location} />
+          <WeatherMapsDrawer lat={weather.lat} lon={weather.lon} location={weather.location} />
+        </>
+      )}
     </main>
   );
 }
